@@ -146,21 +146,13 @@ def set_av_tags(s3_client, s3_object, scan_result, scan_signature, timestamp):
 
 
 def callback_server(s3_client, s3_object, event, scan_result, context):
-    callback_domain = os.getenv("CALLBACK_DOMAIN", None)
-    if not callback_domain:
-        raise Exception('CALLBACK_DOMAIN not configured')
-
-    callback_url = event['callback_url'].split(':8000/')[1]
-
-    # fazer um build descente
-
+    callback_url = event['callback_url']
     CALLBACK_URL = (
-        u'{callback_domain}/{callback_url}'
+        u'{callback_url}'
         u'?scan_result={scan_result}'
         u'&log_stream={log_stream}'
         u'&request_id={request_id}'
     ).format(
-        callback_domain=callback_domain,
         callback_url=callback_url,
         scan_result=scan_result,
         log_stream=context.log_stream_name,
