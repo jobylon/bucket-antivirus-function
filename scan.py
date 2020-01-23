@@ -54,9 +54,8 @@ def jobylon_event_object(event):
     if "key" not in s3_obj:
         raise Exception("No key found in event!")
     key_name = s3_obj.get("key", None)
-
     if key_name:
-        key_name = unquote_plus(key_name.encode("utf8"))
+        key_name = unquote_plus(key_name)
 
     # Ensure both bucket and key exist
     if (not bucket_name) or (not key_name):
