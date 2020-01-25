@@ -35,6 +35,7 @@ from common import AV_STATUS_INFECTED
 from common import CLAMAVLIB_PATH
 from common import CLAMSCAN_PATH
 from common import FRESHCLAM_PATH
+from common import get_timestamp
 from common import create_dir
 
 
@@ -187,7 +188,8 @@ def scan_output_to_json(output):
 def scan_file(path):
     av_env = os.environ.copy()
     av_env["LD_LIBRARY_PATH"] = CLAMAVLIB_PATH
-    print("Starting clamscan of %s." % path)
+    start_time = get_timestamp()
+    print("Starting clamscan of %s. (%s)" % (path, start_time))
     av_proc = subprocess.Popen(
         [CLAMSCAN_PATH, "-v", "-a", "--stdout", "-d", AV_DEFINITION_PATH, path],
         stderr=subprocess.STDOUT,
@@ -196,6 +198,9 @@ def scan_file(path):
     )
     output = av_proc.communicate()[0].decode()
     print("clamscan output:\n%s" % output)
+
+    done_time = get_timestamp()
+    print("Done clamscan of %s. (%s)" % (path, done_time))
 
     # Turn the output into a data source we can read
     summary = scan_output_to_json(output)
